@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DESPISTAS</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo: #FF3B5C;
+    --azul: #1B8EF8;
+    --amarillo: #FFD000;
+    --verde: #00C853;
+    --negro: #111111;
+    --blanco: #FAFAFA;
+    --gris: #F0F0F0;
+    --sombra: 4px 4px 0px var(--negro);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--gris);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* FONDO ANIMADO */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,59,92,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(27,142,248,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(255,208,0,0.05) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  /* TÍTULO */
+  .logo {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(3.5rem, 12vw, 7rem);
+    color: var(--negro);
+    letter-spacing: -2px;
+    line-height: 1;
+    text-align: center;
+    position: relative;
+  }
+  .logo span { color: var(--rojo); }
+  .logo::after {
+    content: 'DESPISTAS';
+    position: absolute;
+    top: 5px; left: 5px;
+    color: var(--amarillo);
+    z-index: -1;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 8px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* BOTONES */
+  .btn {
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.4rem;
+    padding: 14px 36px;
+    border: 3px solid var(--negro);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: var(--sombra);
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--negro); }
+  .btn-rojo { background: var(--rojo); color: white; }
+  .btn-azul { background: var(--azul); color: white; }
+  .btn-amarillo { background: var(--amarillo); color: var(--negro); }
+  .btn-verde { background: var(--verde); color: white; }
+  .btn-gris { background: white; color: var(--negro); }
+  .btn-full { width: 100%; max-width: 360px; text-align: center; }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border: 3px solid var(--negro);
+    border-radius: 16px;
+    box-shadow: var(--sombra);
+    padding: 20px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  /* SETUP */
+  .setup-grid { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 420px; margin-top: 24px; }
+  .input-group label { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px; color: #333; }
+  .input-group input {
+    width: 100%; padding: 12px 14px; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+    border: 3px solid var(--negro); border-radius: 10px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-group input:focus { border-color: var(--azul); }
+
+  .team-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .team-rojo input:focus { border-color: var(--rojo); }
+  .team-azul input:focus { border-color: var(--azul); }
+
+  /* PASE DE DISPOSITIVO */
+  .pase-box {
+    width: 100%; max-width: 420px;
+    background: var(--negro);
+    color: white;
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .pase-box h2 { font-family: 'Boogaloo', cursive; font-size: 2rem; margin-bottom: 8px; }
+  .pase-box p { font-size: 0.95rem; opacity: 0.7; }
+  .pase-icon { font-size: 4rem; margin-bottom: 16px; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+  /* LÍDER */
+  .lider-header {
+    width: 100%; max-width: 420px;
+    border-radius: 16px;
+    padding: 16px 20px;
+    text-align: center;
+    border: 3px solid var(--negro);
+    box-shadow: var(--sombra);
+    margin-bottom: 16px;
+  }
+  .lider-header h2 { font-family: 'Boogaloo', cursive; font-size: 1.6rem; }
+  .lider-header p { font-size: 0.85rem; opacity: 0.85; font-weight: 700; }
+
+  .concepto-box {
+    width: 100%; max-width: 420px;
+    background: var(--amarillo);
+    border: 3px solid var(--negro);
+    border-radius: 16px;
+    box-shadow: var(--sombra);
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .concepto-label { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; opacity: 0.6; margin-bottom: 8px; }
+  .concepto-word { font-family: 'Boogaloo', cursive; font-size: clamp(2rem, 8vw, 3.2rem); color: var(--negro); line-height: 1.1; }
+
+  .instruccion {
+    width: 100%; max-width: 420px;
+    background: #fff8e1;
+    border: 2px dashed #e0a000;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    color: #5a4000;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .pista-input-area { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 10px; }
+  .pista-input-area input {
+    width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 700;
+    border: 3px solid var(--negro); border-radius: 12px; outline: none; text-align: center;
+  }
+
+  /* EQUIPOS ADIVINAN */
+  .equipo-guess {
+    width: 100%; max-width: 420px;
+    border: 3px solid var(--negro);
+    border-radius: 16px;
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .equipo-guess-header {
+    padding: 12px 16px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.3rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .equipo-guess-body { padding: 12px 16px; background: white; }
+  .pista-display {
+    background: var(--gris);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 12px;
+    border: 2px solid #ddd;
+  }
+  .adivino-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* RESULTADO RONDA */
+  .resultado-ronda {
+    width: 100%; max-width: 420px;
+    background: white;
+    border: 3px solid var(--negro);
+    border-radius: 16px;
+    box-shadow: var(--sombra);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .resultado-ronda h3 { font-family: 'Boogaloo', cursive; font-size: 1.5rem; text-align: center; margin-bottom: 16px; }
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 2px dashed #eee; }
+  .result-row:last-child { border-bottom: none; }
+  .result-team { font-weight: 900; font-size: 0.9rem; }
+  .result-badge {
+    font-family: 'Boogaloo', cursive; font-size: 1.1rem;
+    padding: 4px 12px; border-radius: 20px; border: 2px solid var(--negro);
+  }
+  .badge-punto { background: var(--verde); color: white; }
+  .badge-nada { background: #eee; color: #999; }
+
+  /* MARCADOR */
+  .marcador {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    width: 100%; max-width: 420px; margin-bottom: 16px;
+  }
+  .marcador-equipo {
+    border: 3px solid var(--negro); border-radius: 14px; box-shadow: var(--sombra);
+    padding: 16px; text-align: center;
+  }
+  .marcador-nombre { font-size: 0.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; opacity: 0.8; }
+  .marcador-pts { font-family: 'Boogaloo', cursive; font-size: 3rem; line-height: 1; }
+
+  /* GANADOR */
+  .ganador-box {
+    text-align: center;
+    animation: aparecer 0.5s ease;
+  }
+  @keyframes aparecer { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
+  .ganador-trofeo { font-size: 6rem; margin-bottom: 8px; }
+  .ganador-titulo { font-family: 'Boogaloo', cursive; font-size: 2.5rem; margin-bottom: 4px; }
+  .ganador-nombre { font-family: 'Boogaloo', cursive; font-size: 3rem; margin-bottom: 16px; }
+
+  /* RONDA COUNTER */
+  .ronda-badge {
+    background: var(--negro); color: var(--amarillo);
+    font-family: 'Boogaloo', cursive; font-size: 1rem;
+    padding: 4px 14px; border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .gap8 { gap: 8px; }
+  .gap12 { gap: 12px; }
+  .gap16 { gap: 16px; }
+  .mt8 { margin-top: 8px; }
+  .mt16 { margin-top: 16px; }
+  .flex-col { display: flex; flex-direction: column; align-items: center; }
+  .text-center { text-align: center; }
+
+  /* CONFETI */
+  .confeti { position: fixed; pointer-events: none; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; }
+  .confeti-pieza {
+    position: absolute;
+    width: 10px; height: 14px;
+    border-radius: 2px;
+    animation: caer linear forwards;
+  }
+  @keyframes caer {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* TOGGLE CONCEPTO (ocultar al principio) */
+  .oculto { filter: blur(12px); user-select: none; transition: filter 0.3s; }
+  .oculto.revelado { filter: none; }
+</style>
+</head>
+<body>
+
+<!-- =================== PANTALLA: INICIO =================== -->
+<div class="screen active" id="screen-inicio">
+  <div class="logo">DES<span>PI</span>STAS</div>
+  <p class="subtitle">El juego de pistas al revés</p>
+
+  <div class="setup-grid">
+    <div class="card" style="margin-top:8px;">
+      <div style="font-family:'Boogaloo',cursive;font-size:1.2rem;margin-bottom:12px;text-align:center;">⚙️ Configuración</div>
+
+      <div class="team-inputs" style="margin-bottom:14px;">
+        <div class="input-group team-rojo">
+          <label style="color:var(--rojo);">🔴 Equipo 1</label>
+          <input type="text" id="nombre-equipo1" placeholder="Los Rojos" maxlength="15">
+        </div>
+        <div class="input-group team-azul">
+          <label style="color:var(--azul);">🔵 Equipo 2</label>
+          <input type="text" id="nombre-equipo2" placeholder="Los Azules" maxlength="15">
+        </div>
+      </div>
+
+      <div class="input-group" style="margin-bottom:14px;">
+        <label>🏆 Puntos para ganar</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-gris puntos-btn" data-pts="5" onclick="selPuntos(5)">5</button>
+          <button class="btn btn-amarillo puntos-btn" data-pts="7" onclick="selPuntos(7)">7</button>
+          <button class="btn btn-gris puntos-btn" data-pts="10" onclick="selPuntos(10)">10</button>
+          <button class="btn btn-gris puntos-btn" data-pts="15" onclick="selPuntos(15)">15</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>🎲 Categoría de palabras</label>
+        <select id="categoria" style="width:100%;padding:10px 12px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;border:3px solid var(--negro);border-radius:10px;outline:none;background:white;">
+          <option value="mix">🎲 Mix de todo</option>
+          <option value="animales">🐾 Animales</option>
+          <option value="comida">🍕 Comida</option>
+          <option value="peliculas">🎬 Películas & Series</option>
+          <option value="deportes">⚽ Deportes</option>
+          <option value="objetos">🪑 Objetos cotidianos</option>
+          <option value="famosos">🌟 Famosos y personajes</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-rojo btn-full" onclick="iniciarJuego()">¡JUGAR! 🎉</button>
+  </div>
+
+  <p style="margin-top:20px;font-size:0.8rem;color:#888;text-align:center;max-width:320px;">
+    Cada líder da pistas <strong>al equipo contrario</strong> — ¡el primero en responder se lleva el punto!
+  </p>
+</div>
+
+<!-- =================== PANTALLA: PASE =================== -->
+<div class="screen" id="screen-pase">
+  <div class="pase-box">
+    <div class="pase-icon" id="pase-icon">📱</div>
+    <h2 id="pase-titulo">Pasa el dispositivo</h2>
+    <p id="pase-desc">Es el turno del líder</p>
+  </div>
+  <button class="btn btn-amarillo btn-full mt16" onclick="confirmarPase()">✅ Ya lo tengo</button>
+</div>
+
+<!-- =================== PANTALLA: LÍDER VE CONCEPTO =================== -->
+<div class="screen" id="screen-lider">
+  <div class="ronda-badge" id="ronda-badge">Ronda 1</div>
+
+  <div class="lider-header" id="lider-header">
+    <h2 id="lider-nombre">Líder: EQUIPO 1</h2>
+    <p id="lider-instruccion">Das pistas al equipo contrario</p>
+  </div>
+
+  <div style="width:100%;max-width:420px;margin-bottom:12px;">
+    <p style="font-size:0.8rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#888;text-align:center;margin-bottom:8px;">El concepto a transmitir es:</p>
+    <div class="concepto-box" id="concepto-reveal-box">
+      <div class="concepto-label">Tu objetivo secreto</div>
+      <div class="concepto-word oculto" id="concepto-texto">PALABRA</div>
+    </div>
+    <button class="btn btn-gris btn-full" id="btn-revelar" onclick="revelarConcepto()">👁️ Revelar concepto (solo tú)</button>
+  </div>
+
+  <div class="instruccion">
+    💡 Da una pista que <strong>tu equipo entienda</strong> pero que <strong>despiste al rival</strong>
+  </div>
+
+  <div class="pista-input-area">
+    <input type="text" id="pista-input" placeholder="Escribe tu pista aquí..." maxlength="60">
+    <button class="btn btn-verde btn-full" onclick="enviarPista()">Dar pista al rival →</button>
+  </div>
+</div>
+
+<!-- =================== PANTALLA: PASE A RIVAL =================== -->
+<div class="screen" id="screen-pase-rival">
+  <div class="pase-box" style="background:#1a1a2e;">
+    <div class="pase-icon">🔄</div>
+    <h2>¡Pasa el dispositivo!</h2>
+    <p id="pase-rival-desc">Ahora los dos equipos ven la pista</p>
+  </div>
+  <button class="btn btn-azul btn-full mt16" onclick="mostrarAdivinanza()">✅ Listos para adivinar</button>
+</div>
+
+<!-- =================== PANTALLA: ADIVINANZA =================== -->
+<div class="screen" id="screen-adivinanza">
+  <div class="ronda-badge" id="adivinanza-ronda">Ronda 1</div>
+
+  <div style="text-align:center;margin-bottom:12px;">
+    <p style="font-size:0.85rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#888;">La pista del líder rival es:</p>
+  </div>
+
+  <div class="equipo-guess" id="pista-display-box">
+    <div class="equipo-guess-header" style="background:var(--amarillo);">
+      🗣️ Pista recibida
+    </div>
+    <div class="equipo-guess-body">
+      <div class="pista-display" id="pista-mostrada">—</div>
+      <p style="font-size:0.8rem;color:#888;text-align:center;font-weight:700;">¿Qué equipo adivina primero?</p>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:420px;">
+    <p style="font-size:0.85rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#555;text-align:center;">¿Quién adivinó primero?</p>
+    <button class="btn btn-full" id="btn-equipo1-adivino" onclick="registrarAdivinanza(1)">🔴 <span id="adivino-e1">Equipo 1</span> adivinó</button>
+    <button class="btn btn-full" id="btn-equipo2-adivino" onclick="registrarAdivinanza(2)">🔵 <span id="adivino-e2">Equipo 2</span> adivinó</button>
+    <button class="btn btn-gris btn-full" onclick="registrarAdivinanza(0)">❌ Nadie adivinó</button>
+  </div>
+</div>
+
+<!-- =================== PANTALLA: RESULTADO RONDA =================== -->
+<div class="screen" id="screen-resultado">
+  <div class="ronda-badge">Resultado</div>
+
+  <div class="resultado-ronda">
+    <h3>🎯 ¿Qué era el concepto?</h3>
+    <div style="text-align:center;margin-bottom:16px;">
+      <span style="font-family:'Boogaloo',cursive;font-size:2rem;background:var(--amarillo);padding:6px 20px;border-radius:10px;border:2px solid var(--negro);" id="concepto-revelado-final">—</span>
+    </div>
+
+    <div class="result-row">
+      <div>
+        <div class="result-team" id="res-e1-nombre">Equipo 1</div>
+        <div style="font-size:0.75rem;color:#888;" id="res-e1-rol">Líder esta ronda</div>
+      </div>
+      <div class="result-badge" id="res-e1-badge">—</div>
+    </div>
+    <div class="result-row">
+      <div>
+        <div class="result-team" id="res-e2-nombre">Equipo 2</div>
+        <div style="font-size:0.75rem;color:#888;" id="res-e2-rol">Intentó adivinar</div>
+      </div>
+      <div class="result-badge" id="res-e2-badge">—</div>
+    </div>
+  </div>
+
+  <div class="marcador">
+    <div class="marcador-equipo" id="marc-e1" style="background:#fff5f5;">
+      <div class="marcador-nombre" id="marc-e1-nombre" style="color:var(--rojo);">Equipo 1</div>
+      <div class="marcador-pts" id="marc-e1-pts" style="color:var(--rojo);">0</div>
+    </div>
+    <div class="marcador-equipo" id="marc-e2" style="background:#f0f8ff;">
+      <div class="marcador-nombre" id="marc-e2-nombre" style="color:var(--azul);">Equipo 2</div>
+      <div class="marcador-pts" id="marc-e2-pts" style="color:var(--azul);">0</div>
+    </div>
+  </div>
+
+  <button class="btn btn-negro btn-full" id="btn-siguiente-ronda" onclick="siguienteRonda()" style="background:var(--negro);color:white;">
+    Siguiente ronda →
+  </button>
+</div>
+
+<!-- =================== PANTALLA: GANADOR =================== -->
+<div class="screen" id="screen-ganador">
+  <div class="ganador-box flex-col">
+    <div class="ganador-trofeo">🏆</div>
+    <div class="ganador-titulo">¡GANADOR!</div>
+    <div class="ganador-nombre" id="ganador-nombre" style="color:var(--rojo);">Equipo 1</div>
+    <div class="marcador" style="margin-bottom:20px;">
+      <div class="marcador-equipo" style="background:#fff5f5;">
+        <div class="marcador-nombre" id="final-e1-nombre" style="color:var(--rojo);">E1</div>
+        <div class="marcador-pts" id="final-e1-pts" style="color:var(--rojo);">0</div>
+      </div>
+      <div class="marcador-equipo" style="background:#f0f8ff;">
+        <div class="marcador-nombre" id="final-e2-nombre" style="color:var(--azul);">E2</div>
+        <div class="marcador-pts" id="final-e2-pts" style="color:var(--azul);">0</div>
+      </div>
+    </div>
+    <button class="btn btn-rojo btn-full" onclick="reiniciarJuego()">🔄 Jugar otra vez</button>
+  </div>
+</div>
+
+<script>
+// ============================
+// BANCO DE PALABRAS
+// ============================
+const PALABRAS = {
+  animales: ['Elefante','Cocodrilo','Pingüino','Canguro','Delfín','Jirafa','Panda','Camaleón','Murciélago','Hormiga','Flamenco','Tortuga','Rinoceronte','Koala','Mapache','Pulpo','Avestruz','Ardilla','Hipopótamo','Tiburón'],
+  comida: ['Pizza','Tortilla','Paella','Sushi','Hamburguesa','Macarrones','Gazpacho','Churros','Croqueta','Pulpo','Sándwich','Cacahuete','Donuts','Tarta','Fondue','Kebab','Nachos','Gofre','Helado','Crepe'],
+  peliculas: ['Titanic','Matrix','Frozen','Shrek','Avatar','Joker','Bambi','Pinocho','Toy Story','Grease','Batman','Gladiator','Alien','Rocky','Jumanji','Pulp Fiction','Up','Cars','Coco','Aladdin'],
+  deportes: ['Fútbol','Tenis','Baloncesto','Natación','Esquí','Boxeo','Golf','Rugby','Ciclismo','Surf','Voleibol','Bádminton','Escalada','Esgrima','Patinaje','Tiro con arco','Halterofilia','Piragüismo','Atletismo','Polo'],
+  objetos: ['Paraguas','Tijeras','Brújula','Termómetro','Calendario','Espejo','Bañera','Linterna','Calculadora','Lupa','Colchón','Mochila','Lámpara','Auriculares','Microscopio','Maleta','Pegamento','Destornillador','Compás','Candado'],
+  famosos: ['Cleopatra','Einstein','Messi','Shakespeare','Napoleón','Darwin','Mozart','Lincoln','Frida Kahlo','Dalí','Picasso','Newton','Gandhi','Beethoven','Cervantes','Marco Polo','Jules Verne','Chaplin','Tesla','Darwin'],
+};
+PALABRAS.mix = [...new Set([...PALABRAS.animales,...PALABRAS.comida,...PALABRAS.peliculas,...PALABRAS.deportes,...PALABRAS.objetos,...PALABRAS.famosos])];
+
+// ============================
+// ESTADO DEL JUEGO
+// ============================
+let estado = {
+  equipos: ['', ''],
+  puntos: [0, 0],
+  puntosParaGanar: 7,
+  ronda: 1,
+  turnoLider: 0, // qué equipo es el líder esta ronda
+  concepto: '',
+  pista: '',
+  usadas: [],
+  categoria: 'mix',
+};
+
+function getPalabra() {
+  const cat = estado.categoria;
+  const pool = PALABRAS[cat].filter(p => !estado.usadas.includes(p));
+  if (pool.length === 0) { estado.usadas = []; return PALABRAS[cat][0]; }
+  const p = pool[Math.floor(Math.random() * pool.length)];
+  estado.usadas.push(p);
+  return p;
+}
+
+// ============================
+// NAVEGACIÓN
+// ============================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ============================
+// CONFIG
+// ============================
+let puntosSeleccionados = 7;
+function selPuntos(n) {
+  puntosSeleccionados = n;
+  document.querySelectorAll('.puntos-btn').forEach(b => {
+    b.className = 'btn btn-gris puntos-btn';
+  });
+  document.querySelector(`[data-pts="${n}"]`).className = 'btn btn-amarillo puntos-btn';
+}
+
+function iniciarJuego() {
+  const n1 = document.getElementById('nombre-equipo1').value.trim() || 'Los Rojos';
+  const n2 = document.getElementById('nombre-equipo2').value.trim() || 'Los Azules';
+  estado.equipos = [n1, n2];
+  estado.puntos = [0, 0];
+  estado.puntosParaGanar = puntosSeleccionados;
+  estado.ronda = 1;
+  estado.turnoLider = 0;
+  estado.usadas = [];
+  estado.categoria = document.getElementById('categoria').value;
+
+  actualizarMarcador();
+  iniciarRonda();
+}
+
+// ============================
+// RONDA
+// ============================
+function iniciarRonda() {
+  estado.concepto = getPalabra();
+
+  // Pase al líder
+  const lider = estado.equipos[estado.turnoLider];
+  document.getElementById('pase-icon').textContent = estado.turnoLider === 0 ? '🔴' : '🔵';
+  document.getElementById('pase-titulo').textContent = `¡Turno del líder!`;
+  document.getElementById('pase-desc').textContent = `${lider} — el líder recibe el dispositivo`;
+
+  showScreen('screen-pase');
+}
+
+function confirmarPase() {
+  // Configurar pantalla del líder
+  const liderIdx = estado.turnoLider;
+  const lider = estado.equipos[liderIdx];
+  const rival = estado.equipos[1 - liderIdx];
+
+  const colores = ['var(--rojo)', 'var(--azul)'];
+  const bgs = ['#fff5f5', '#f0f8ff'];
+
+  const header = document.getElementById('lider-header');
+  header.style.background = bgs[liderIdx];
+  header.style.borderColor = colores[liderIdx];
+
+  document.getElementById('lider-nombre').textContent = `🎯 Líder: ${lider}`;
+  document.getElementById('lider-instruccion').textContent = `Das pistas a ${rival} — ¡pero que adivine tu equipo!`;
+  document.getElementById('ronda-badge').textContent = `Ronda ${estado.ronda}`;
+
+  // Concepto oculto
+  document.getElementById('concepto-texto').textContent = estado.concepto;
+  document.getElementById('concepto-texto').classList.remove('revelado');
+  document.getElementById('concepto-texto').classList.add('oculto');
+  document.getElementById('btn-revelar').style.display = 'block';
+
+  document.getElementById('pista-input').value = '';
+
+  showScreen('screen-lider');
+}
+
+function revelarConcepto() {
+  document.getElementById('concepto-texto').classList.add('revelado');
+  document.getElementById('btn-revelar').style.display = 'none';
+}
+
+function enviarPista() {
+  const pista = document.getElementById('pista-input').value.trim();
+  if (!pista) { alert('¡Escribe una pista primero!'); return; }
+  estado.pista = pista;
+
+  // Pase al rival
+  const rival = estado.equipos[1 - estado.turnoLider];
+  document.getElementById('pase-rival-desc').textContent = `Ahora ${rival} y ${estado.equipos[estado.turnoLider]} pueden ver la pista`;
+  showScreen('screen-pase-rival');
+}
+
+function mostrarAdivinanza() {
+  document.getElementById('adivinanza-ronda').textContent = `Ronda ${estado.ronda}`;
+  document.getElementById('pista-mostrada').textContent = estado.pista;
+
+  // Botones con nombres
+  document.getElementById('adivino-e1').textContent = estado.equipos[0];
+  document.getElementById('adivino-e2').textContent = estado.equipos[1];
+
+  const colores = ['var(--rojo)', 'var(--azul)'];
+  const bgsBtn = ['btn-rojo', 'btn-azul'];
+  document.getElementById('btn-equipo1-adivino').className = `btn btn-full btn-rojo`;
+  document.getElementById('btn-equipo2-adivino').className = `btn btn-full btn-azul`;
+
+  showScreen('screen-adivinanza');
+}
+
+// ============================
+// RESULTADO
+// ============================
+function registrarAdivinanza(equipo) {
+  // equipo: 1 = equipo1 ganó, 2 = equipo2 ganó, 0 = nadie
+  const liderIdx = estado.turnoLider;
+  const rivalIdx = 1 - liderIdx;
+
+  // Reglas de puntuación:
+  // - El rival (quien adivina) gana punto si adivina
+  // - El equipo del líder gana punto si el rival NO adivina
+  let puntosGanados = [0, 0];
+  let desc = ['', ''];
+
+  if (equipo === rivalIdx + 1) {
+    // El rival adivinó
+    puntosGanados[rivalIdx] = 1;
+    desc[rivalIdx] = '¡Adivinaron!';
+    desc[liderIdx] = 'No puntuó';
+  } else if (equipo === liderIdx + 1) {
+    // El equipo del líder "interceptó" (el rival no adivinó, pero el equipo del líder sí)
+    puntosGanados[liderIdx] = 1;
+    desc[liderIdx] = '¡Interceptaron!';
+    desc[rivalIdx] = 'No puntuó';
+  } else {
+    // Nadie adivinó → punto para el equipo del líder
+    puntosGanados[liderIdx] = 1;
+    desc[liderIdx] = '¡Nadie adivinó!';
+    desc[rivalIdx] = 'No puntuó';
+  }
+
+  estado.puntos[0] += puntosGanados[0];
+  estado.puntos[1] += puntosGanados[1];
+
+  // Pantalla resultado
+  document.getElementById('concepto-revelado-final').textContent = estado.concepto;
+  document.getElementById('res-e1-nombre').textContent = estado.equipos[0];
+  document.getElementById('res-e2-nombre').textContent = estado.equipos[1];
+  document.getElementById('res-e1-rol').textContent = liderIdx === 0 ? '🎯 Líder esta ronda' : '🔍 Intentó adivinar';
+  document.getElementById('res-e2-rol').textContent = liderIdx === 1 ? '🎯 Líder esta ronda' : '🔍 Intentó adivinar';
+
+  const badge1 = document.getElementById('res-e1-badge');
+  const badge2 = document.getElementById('res-e2-badge');
+  badge1.textContent = puntosGanados[0] ? `+1 ${desc[0]}` : desc[0];
+  badge2.textContent = puntosGanados[1] ? `+1 ${desc[1]}` : desc[1];
+  badge1.className = `result-badge ${puntosGanados[0] ? 'badge-punto' : 'badge-nada'}`;
+  badge2.className = `result-badge ${puntosGanados[1] ? 'badge-punto' : 'badge-nada'}`;
+
+  actualizarMarcador();
+
+  // ¿Hay ganador?
+  const ganador = estado.puntos[0] >= estado.puntosParaGanar ? 0 :
+                  estado.puntos[1] >= estado.puntosParaGanar ? 1 : -1;
+
+  const btnSig = document.getElementById('btn-siguiente-ronda');
+  if (ganador >= 0) {
+    btnSig.textContent = '🏆 Ver ganador';
+    btnSig.onclick = () => mostrarGanador(ganador);
+  } else {
+    btnSig.textContent = 'Siguiente ronda →';
+    btnSig.onclick = siguienteRonda;
+  }
+
+  showScreen('screen-resultado');
+}
+
+function actualizarMarcador() {
+  document.getElementById('marc-e1-nombre').textContent = estado.equipos[0] || 'Equipo 1';
+  document.getElementById('marc-e2-nombre').textContent = estado.equipos[1] || 'Equipo 2';
+  document.getElementById('marc-e1-pts').textContent = estado.puntos[0];
+  document.getElementById('marc-e2-pts').textContent = estado.puntos[1];
+}
+
+function siguienteRonda() {
+  estado.ronda++;
+  estado.turnoLider = 1 - estado.turnoLider; // alternar líderes
+  iniciarRonda();
+}
+
+// ============================
+// GANADOR
+// ============================
+function mostrarGanador(idx) {
+  const colores = ['var(--rojo)', 'var(--azul)'];
+  document.getElementById('ganador-nombre').textContent = estado.equipos[idx];
+  document.getElementById('ganador-nombre').style.color = colores[idx];
+  document.getElementById('final-e1-nombre').textContent = estado.equipos[0];
+  document.getElementById('final-e2-nombre').textContent = estado.equipos[1];
+  document.getElementById('final-e1-pts').textContent = estado.puntos[0];
+  document.getElementById('final-e2-pts').textContent = estado.puntos[1];
+  showScreen('screen-ganador');
+  lanzarConfeti();
+}
+
+function reiniciarJuego() {
+  showScreen('screen-inicio');
+}
+
+// ============================
+// CONFETI
+// ============================
+function lanzarConfeti() {
+  const colors = ['#FF3B5C','#1B8EF8','#FFD000','#00C853','#FF8C00','#9B59B6'];
+  const container = document.createElement('div');
+  container.className = 'confeti';
+  document.body.appendChild(container);
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'confeti-pieza';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    p.style.animationDelay = (Math.random() * 1.5) + 's';
+    p.style.width = (8 + Math.random() * 8) + 'px';
+    p.style.height = (10 + Math.random() * 10) + 'px';
+    container.appendChild(p);
+  }
+  setTimeout(() => container.remove(), 5000);
+}
+</script>
+</body>
+</html>
