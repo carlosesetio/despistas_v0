@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DESPISTAS</title>
-<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --rojo: #FF3B5C;
@@ -17,7 +18,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
     background: var(--gris);
     min-height: 100vh;
   }
@@ -37,15 +38,14 @@
   .screen.active { display: flex; }
 
   .logo {
-    font-family: 'Boogaloo', cursive;
+    font-family: 'Arial Black', 'Impact', sans-serif;
     font-size: clamp(3.5rem, 14vw, 7rem);
     color: var(--negro); letter-spacing: -2px; line-height: 1;
     text-align: center; position: relative;
   }
   .logo span { color: var(--rojo); }
   .logo::after {
-    content: 'DESPISTAS'; position: absolute; top: 5px; left: 5px;
-    color: var(--amarillo); z-index: -1;
+    content: ''; 
   }
   .subtitle {
     font-size: 0.9rem; color: #666; margin-top: 6px;
@@ -53,7 +53,7 @@
   }
 
   .btn {
-    font-family: 'Boogaloo', cursive; font-size: 1.4rem;
+    font-family: 'Arial Black', 'Impact', sans-serif; font-size: 1.4rem;
     padding: 16px 32px; border: 3px solid var(--negro);
     border-radius: 14px; cursor: pointer;
     box-shadow: var(--sombra);
@@ -82,7 +82,7 @@
   }
   .input-group input, .input-group select {
     width: 100%; padding: 12px 14px;
-    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; font-weight: 700;
     border: 3px solid var(--negro); border-radius: 10px; outline: none;
     background: white;
   }
@@ -90,7 +90,7 @@
 
   .puntos-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .pts-btn {
-    font-family: 'Boogaloo', cursive; font-size: 1.2rem;
+    font-family: 'Arial Black', 'Impact', sans-serif; font-size: 1.2rem;
     padding: 8px 18px; border: 3px solid var(--negro); border-radius: 10px;
     cursor: pointer; background: white; box-shadow: 2px 2px 0 var(--negro);
     transition: transform 0.1s;
@@ -100,7 +100,7 @@
 
   .ronda-badge {
     background: var(--negro); color: var(--amarillo);
-    font-family: 'Boogaloo', cursive; font-size: 1rem;
+    font-family: 'Arial Black', 'Impact', sans-serif; font-size: 1rem;
     padding: 5px 16px; border-radius: 20px; margin-bottom: 16px;
   }
 
@@ -111,7 +111,7 @@
   }
   .pase-icon { font-size: 4rem; margin-bottom: 12px; animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-  .pase-box h2 { font-family: 'Boogaloo', cursive; font-size: 2rem; margin-bottom: 8px; }
+  .pase-box h2 { font-family: 'Arial Black', 'Impact', sans-serif; font-size: 2rem; margin-bottom: 8px; }
   .pase-box p  { font-size: 0.9rem; opacity: 0.65; }
 
   .empieza-banner {
@@ -119,7 +119,7 @@
     border: 3px solid var(--negro); border-radius: 14px;
     box-shadow: var(--sombra); padding: 14px 18px;
     text-align: center; margin-bottom: 14px;
-    font-family: 'Boogaloo', cursive; font-size: 1.3rem;
+    font-family: 'Arial Black', 'Impact', sans-serif; font-size: 1.3rem;
   }
 
   .concepto-card {
@@ -133,7 +133,7 @@
     letter-spacing: 2px; opacity: 0.55; margin-bottom: 8px;
   }
   .concepto-word {
-    font-family: 'Boogaloo', cursive;
+    font-family: 'Arial Black', 'Impact', sans-serif;
     font-size: clamp(2.2rem, 10vw, 3.5rem);
     color: var(--negro); line-height: 1.1;
     filter: blur(10px); transition: filter 0.3s;
@@ -149,7 +149,7 @@
     box-shadow: var(--sombra); padding: 14px; text-align: center;
   }
   .marc-nombre { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-  .marc-pts { font-family: 'Boogaloo', cursive; font-size: 3rem; line-height: 1; }
+  .marc-pts { font-family: 'Arial Black', 'Impact', sans-serif; font-size: 3rem; line-height: 1; }
 
   .resultado-card {
     width: 100%; max-width: 400px;
@@ -157,10 +157,10 @@
     border-radius: 16px; box-shadow: var(--sombra);
     padding: 20px; margin-bottom: 16px; text-align: center;
   }
-  .resultado-card h3 { font-family: 'Boogaloo', cursive; font-size: 1.6rem; margin-bottom: 8px; }
+  .resultado-card h3 { font-family: 'Arial Black', 'Impact', sans-serif; font-size: 1.6rem; margin-bottom: 8px; }
   .concepto-reveal-final {
     display: inline-block;
-    font-family: 'Boogaloo', cursive; font-size: 2rem;
+    font-family: 'Arial Black', 'Impact', sans-serif; font-size: 2rem;
     background: var(--amarillo); padding: 6px 20px;
     border-radius: 10px; border: 2px solid var(--negro);
     margin-bottom: 8px;
@@ -168,14 +168,14 @@
   .ganador-ronda-txt {
     font-size: 1rem; font-weight: 900; padding: 10px 16px;
     border-radius: 10px; border: 2px solid var(--negro);
-    display: inline-block; font-family: 'Boogaloo', cursive; font-size: 1.2rem;
+    display: inline-block; font-family: 'Arial Black', 'Impact', sans-serif; font-size: 1.2rem;
   }
 
   .ganador-box { text-align: center; animation: pop 0.4s ease; }
   @keyframes pop { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
   .trofeo { font-size: 6rem; margin-bottom: 8px; }
-  .ganador-titulo { font-family: 'Boogaloo', cursive; font-size: 2.2rem; }
-  .ganador-equipo { font-family: 'Boogaloo', cursive; font-size: 3.5rem; margin-bottom: 16px; }
+  .ganador-titulo { font-family: 'Arial Black', 'Impact', sans-serif; font-size: 2.2rem; }
+  .ganador-equipo { font-family: 'Arial Black', 'Impact', sans-serif; font-size: 3.5rem; margin-bottom: 16px; }
 
   .confeti { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999; }
   .confeti-p {
@@ -187,62 +187,68 @@
     100% { transform: translateY(110vh) rotate(720deg); opacity:0; }
   }
 </style>
+
 </head>
 <body>
 
 <!-- INICIO -->
+
 <div class="screen active" id="s-inicio">
   <div class="logo">DES<span>PI</span>STAS</div>
   <p class="subtitle">El juego de pistas al revés</p>
 
   <div style="width:100%;max-width:400px;margin-top:24px;display:flex;flex-direction:column;gap:16px;">
     <div class="card">
-      <div style="font-family:'Boogaloo',cursive;font-size:1.2rem;text-align:center;margin-bottom:14px;">⚙️ Configuración</div>
+      <div style="font-family:'Arial Black','Impact',sans-serif;font-size:1.2rem;text-align:center;margin-bottom:14px;">⚙️ Configuración</div>
 
-      <div class="team-grid">
-        <div class="input-group" style="margin-bottom:0;">
-          <label style="color:var(--rojo);">🔴 Equipo Rojo</label>
-          <input id="n1" type="text" placeholder="Los Rojos" maxlength="14">
-        </div>
-        <div class="input-group" style="margin-bottom:0;">
-          <label style="color:var(--azul);">🔵 Equipo Azul</label>
-          <input id="n2" type="text" placeholder="Los Azules" maxlength="14">
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label>🏆 Puntos para ganar</label>
-        <div class="puntos-row">
-          <button class="pts-btn" data-pts="5"  onclick="selPts(5)">5</button>
-          <button class="pts-btn sel" data-pts="7" onclick="selPts(7)">7</button>
-          <button class="pts-btn" data-pts="10" onclick="selPts(10)">10</button>
-          <button class="pts-btn" data-pts="15" onclick="selPts(15)">15</button>
-        </div>
-      </div>
-
-      <div class="input-group" style="margin-bottom:0;">
-        <label>🎲 Categoría</label>
-        <select id="cat">
-          <option value="mix">🎲 Mix de todo</option>
-          <option value="series">📺 Series & Pelis</option>
-          <option value="musica">🎵 Música</option>
-          <option value="videojuegos">🎮 Videojuegos</option>
-          <option value="internet">📱 Internet & Redes</option>
-          <option value="lugares">🗺️ Lugares</option>
-          <option value="famosos">🌟 Famosos</option>
-          <option value="deporte">⚽ Deporte &amp; Futbolistas</option>
-          <option value="marcas">🚀 Marcas &amp; Tecnología</option>
-          <option value="cultura">🧠 Cultura general</option>
-          <option value="ficcion">🎭 Personajes de ficción</option>
-        </select>
-      </div>
+```
+  <div class="team-grid">
+    <div class="input-group" style="margin-bottom:0;">
+      <label style="color:var(--rojo);">🔴 Equipo Rojo</label>
+      <input id="n1" type="text" placeholder="Los Rojos" maxlength="14">
     </div>
+    <div class="input-group" style="margin-bottom:0;">
+      <label style="color:var(--azul);">🔵 Equipo Azul</label>
+      <input id="n2" type="text" placeholder="Los Azules" maxlength="14">
+    </div>
+  </div>
 
-    <button class="btn btn-rojo" onclick="iniciarJuego()">¡JUGAR! 🎉</button>
+  <div class="input-group">
+    <label>🏆 Puntos para ganar</label>
+    <div class="puntos-row">
+      <button class="pts-btn" data-pts="5"  onclick="selPts(5)">5</button>
+      <button class="pts-btn sel" data-pts="7" onclick="selPts(7)">7</button>
+      <button class="pts-btn" data-pts="10" onclick="selPts(10)">10</button>
+      <button class="pts-btn" data-pts="15" onclick="selPts(15)">15</button>
+    </div>
+  </div>
+
+  <div class="input-group" style="margin-bottom:0;">
+    <label>🎲 Categoría</label>
+    <select id="cat">
+      <option value="mix">🎲 Mix de todo</option>
+      <option value="series">📺 Series & Pelis</option>
+      <option value="musica">🎵 Música</option>
+      <option value="videojuegos">🎮 Videojuegos</option>
+      <option value="internet">📱 Internet & Redes</option>
+      <option value="lugares">🗺️ Lugares</option>
+      <option value="famosos">🌟 Famosos</option>
+      <option value="deporte">⚽ Deporte &amp; Futbolistas</option>
+      <option value="marcas">🚀 Marcas &amp; Tecnología</option>
+      <option value="cultura">🧠 Cultura general</option>
+      <option value="ficcion">🎭 Personajes de ficción</option>
+    </select>
+  </div>
+</div>
+
+<button class="btn btn-rojo" onclick="iniciarJuego()">¡JUGAR! 🎉</button>
+```
+
   </div>
 </div>
 
 <!-- PASE A LÍDERES -->
+
 <div class="screen" id="s-pase">
   <div class="pase-box">
     <div class="pase-icon">🤫</div>
@@ -253,6 +259,7 @@
 </div>
 
 <!-- LÍDERES VEN EL CONCEPTO -->
+
 <div class="screen" id="s-lideres">
   <div class="ronda-badge" id="ronda-badge">Ronda 1</div>
 
@@ -271,10 +278,12 @@
     💡 Dad pistas en voz alta sin decir la palabra
   </div>
 
-  <button class="btn btn-negro" onclick="irAResultado()">¿Quién adivinó? →</button>
+<button class="btn btn-negro" onclick="irAResultado()">¿Quién adivinó? →</button>
+
 </div>
 
 <!-- VOTACIÓN GANADOR RONDA -->
+
 <div class="screen" id="s-resultado">
   <div class="ronda-badge" id="res-ronda-badge">Ronda 1</div>
 
@@ -293,6 +302,7 @@
 </div>
 
 <!-- MARCADOR -->
+
 <div class="screen" id="s-marcador">
   <div class="ronda-badge" id="marc-ronda-badge">Resultado</div>
 
@@ -311,10 +321,12 @@
     </div>
   </div>
 
-  <button class="btn btn-negro" id="btn-sig-ronda" onclick="siguienteRonda()">Siguiente ronda →</button>
+<button class="btn btn-negro" id="btn-sig-ronda" onclick="siguienteRonda()">Siguiente ronda →</button>
+
 </div>
 
 <!-- GANADOR FINAL -->
+
 <div class="screen" id="s-ganador">
   <div class="ganador-box" style="display:flex;flex-direction:column;align-items:center;">
     <div class="trofeo">🏆</div>
@@ -506,5 +518,6 @@ function lanzarConfeti() {
   setTimeout(() => c.remove(), 5000);
 }
 </script>
+
 </body>
 </html>
